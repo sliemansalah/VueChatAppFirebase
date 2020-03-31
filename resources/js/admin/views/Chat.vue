@@ -17,7 +17,8 @@
               <div class="chat_people">
                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                 <div class="chat_ib">
-                  <h5> {{ message_from}}<span class="chat_date"></span></h5>
+                  <h5> {{ message_from}}<span class="chat_date">
+                    </span></h5>
                   <p></p>
                 </div>
               </div>
