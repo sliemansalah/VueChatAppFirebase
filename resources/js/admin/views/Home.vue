@@ -134,11 +134,12 @@ export default {
       // save to firestore
       db.collection('chat').add({
         message:this.message,
+        createdAt: new Date()
       })
       this.message = null;
     },
     fetchMessages(){
-    db.collection('chat').get().then((querySnapshot) => {
+    db.collection('chat').orderBy('createdAt').get().then((querySnapshot) => {
       let allMessages = [];
       querySnapshot.forEach(doc => {
         allMessages.push(doc.data());
