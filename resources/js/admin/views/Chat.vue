@@ -4,7 +4,7 @@
      <br>
     <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
-<div class="messaging">
+<div class="messaging" v-if="messages.length>0">
       <div class="inbox_msg">
         <div class="inbox_people">
           <div class="headind_srch">
@@ -36,12 +36,6 @@
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
-            <!-- <div class="outgoing_msg">
-              <div class="sent_msg">
-                <p>Test which is a new approach to have all
-                  solutions</p>
-                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-            </div> -->
           </div>
           <div class="type_msg">
             <div class="input_msg_write">
@@ -52,9 +46,24 @@
         </div>
       </div>
             
-    </div></div>
+    </div>
+    <div v-else>
+      <br><br>
+      <h3 class="text-danger text-center">You don't have any message</h3>
+      <br><br>
+      <div class="type_msg">
+            <div class="input_msg_write">
+              <input @keyup.enter="saveMessage" v-model="message" type="text" class="write_msg" placeholder="Type a message" />
+              <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+            </div>
+          </div>
+    </div>
+    </div>
 
   </div>
+
+
+
 </template>
 
 <script>
