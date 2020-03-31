@@ -36,9 +36,13 @@
               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
               <div class="received_msg">
                 <div class="received_withd_msg">
-                  <p>{{ message.message }}</p>
+                  <input @keydown.enter="editMe(message,$event)" v-if="isEdit && key == editKey" type="text" 
+                  v-model="message.message">
+                  <div v-else>
+                   <p>{{ message.message }}</p>
                   <i v-if="authUser == message.author" @click="remove(message)" class="fa fa-trash"></i>
-                    <i v-if="authUser == message.author" @click="edit(message)" class="fa fa-pencil"></i>
+                    <i v-if="authUser == message.author" @click="edit(message,key)" class="fa fa-pencil"></i>
+                  </div>
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
@@ -70,6 +74,7 @@ import firebase from 'firebase'
 export default {
   data() {
     return {
+      editKey:0,
       msgNotReadCount:0,
       loading:false,
       message:null,
@@ -77,6 +82,7 @@ export default {
       messages: [],
       authUser: '',
       message_from:'Test User',
+      isEdit:false,
     }
   },
   methods:{
@@ -124,11 +130,16 @@ export default {
           console.log('Deleted successfully');
         })
   },
-  edit(m){
-        db.collection('chat').doc(m.id).update({
-          message:this.message
+  edit(m,key){
+    this.isEdit = true;
+    this.editKey = key
+  },
+  editMe(m,e) {
+db.collection('chat').doc(m.id).update({
+          message:e.target.value
         })
         .then(_=> {
+          this.isEdit = false;
                    console.log('Updated successfully');
         })
   },

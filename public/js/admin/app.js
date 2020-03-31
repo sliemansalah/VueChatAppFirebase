@@ -44640,17 +44640,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      editKey: 0,
       msgNotReadCount: 0,
       loading: false,
       message: null,
       showMsgs: false,
       messages: [],
       authUser: '',
-      message_from: 'Test User'
+      message_from: 'Test User',
+      isEdit: false
     };
   },
   methods: {
@@ -44699,20 +44705,27 @@ __webpack_require__.r(__webpack_exports__);
         console.log('Deleted successfully');
       });
     },
-    edit: function edit(m) {
+    edit: function edit(m, key) {
+      this.isEdit = true;
+      this.editKey = key;
+    },
+    editMe: function editMe(m, e) {
+      var _this2 = this;
+
       db.collection('chat').doc(m.id).update({
-        message: this.message
+        message: e.target.value
       }).then(function (_) {
+        _this2.isEdit = false;
         console.log('Updated successfully');
       });
     },
     showOurMsg: function showOurMsg() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.showMsgs = true;
       this.messages.forEach(function (msg) {
-        if (msg.author !== _this2.authUser) {
-          _this2.msgNotReadCount = 0;
+        if (msg.author !== _this3.authUser) {
+          _this3.msgNotReadCount = 0;
           db.collection('chat').doc(msg.id).update({
             read: true
           }).then(function (_) {
@@ -48777,29 +48790,73 @@ var render = function() {
                             _vm._v(" "),
                             _c("div", { staticClass: "received_msg" }, [
                               _c("div", { staticClass: "received_withd_msg" }, [
-                                _c("p", [_vm._v(_vm._s(message.message))]),
-                                _vm._v(" "),
-                                _vm.authUser == message.author
-                                  ? _c("i", {
-                                      staticClass: "fa fa-trash",
+                                _vm.isEdit && key == _vm.editKey
+                                  ? _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: message.message,
+                                          expression: "message.message"
+                                        }
+                                      ],
+                                      attrs: { type: "text" },
+                                      domProps: { value: message.message },
                                       on: {
-                                        click: function($event) {
-                                          return _vm.remove(message)
+                                        keydown: function($event) {
+                                          if (
+                                            !$event.type.indexOf("key") &&
+                                            _vm._k(
+                                              $event.keyCode,
+                                              "enter",
+                                              13,
+                                              $event.key,
+                                              "Enter"
+                                            )
+                                          ) {
+                                            return null
+                                          }
+                                          return _vm.editMe(message, $event)
+                                        },
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            message,
+                                            "message",
+                                            $event.target.value
+                                          )
                                         }
                                       }
                                     })
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _vm.authUser == message.author
-                                  ? _c("i", {
-                                      staticClass: "fa fa-pencil",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.edit(message)
-                                        }
-                                      }
-                                    })
-                                  : _vm._e(),
+                                  : _c("div", [
+                                      _c("p", [
+                                        _vm._v(_vm._s(message.message))
+                                      ]),
+                                      _vm._v(" "),
+                                      _vm.authUser == message.author
+                                        ? _c("i", {
+                                            staticClass: "fa fa-trash",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.remove(message)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm.authUser == message.author
+                                        ? _c("i", {
+                                            staticClass: "fa fa-pencil",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.edit(message, key)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ]),
                                 _vm._v(" "),
                                 _c("span", { staticClass: "time_date" }, [
                                   _vm._v(_vm._s(message.author))
