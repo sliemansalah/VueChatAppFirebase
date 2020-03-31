@@ -1,6 +1,8 @@
 <template>
   <div class="home">
    <div class="container">
+     <br>
+    <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
 <div class="messaging">
       <div class="inbox_msg">
@@ -130,6 +132,10 @@ export default {
     }
   },
   methods:{
+    logout(){
+      localStorage.removeItem('user');
+      this.$router.replace('/login')
+    },
     saveMessage(){
       // save to firestore
       db.collection('chat').add({

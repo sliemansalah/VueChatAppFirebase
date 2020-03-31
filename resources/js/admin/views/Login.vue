@@ -32,6 +32,7 @@ import firebase from 'firebase';
             signIn(){
                 firebase.auth().signInWithEmailAndPassword(this.formData.email,this.formData.password)
                     .then((user)=>{
+                        localStorage.setItem('user',this.formData.email)
                       this.$router.replace('/chat')
                     })
                     .catch((e)=>{
@@ -46,6 +47,9 @@ import firebase from 'firebase';
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .container {
+        margin-top: 200px;
+    }
     h1, h2 {
         font-weight: normal;
     }
