@@ -5,7 +5,25 @@
     <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
 <div class="messaging">
-      <div class="ml-25">
+      <div class="inbox_msg">
+        <div class="inbox_people">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Recent</h4>
+            </div>
+          </div>
+          <div class="inbox_chat">
+            <div class="chat_list active_chat">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5> {{ message_from}}<span class="chat_date"></span></h5>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="mesgs">
           <div class="msg_history">
             <div v-for="(message,key) in messages" :key="key" 
@@ -17,11 +35,17 @@
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
+            <!-- <div class="outgoing_msg">
+              <div class="sent_msg">
+                <p>Test which is a new approach to have all
+                  solutions</p>
+                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
+            </div> -->
           </div>
           <div class="type_msg">
             <div class="input_msg_write">
               <input @keyup.enter="saveMessage" v-model="message" type="text" class="write_msg" placeholder="Type a message" />
-              <button @click="saveMessage"  class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+              <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
             </div>
           </div>
         </div>
@@ -39,13 +63,14 @@ export default {
     return {
       message:null,
       messages: [],
-      authUser: ''
+      authUser: '',
+      message_from:'',
     }
   },
   methods:{
     logout(){
       localStorage.removeItem('user');
-      this.$router.go(0)
+      this.$router.replace('/login')
     },
     saveMessage(){
       // save to firestore
@@ -61,6 +86,11 @@ export default {
       let allMessages = [];
       querySnapshot.forEach(doc => {
         allMessages.push(doc.data());
+      });
+      allMessages.forEach(msg => {
+        if(msg.author !== this.authUser) {
+          this.message_from = msg.author;
+        }
       });
       this.messages = allMessages;
     });
@@ -83,6 +113,11 @@ img{ max-width:100%;}
   float: left;
   overflow: hidden;
   width: 40%; border-right:1px solid #c4c4c4;
+}
+.inbox_msg {
+  border: 1px solid #c4c4c4;
+  clear: both;
+  overflow: hidden;
 }
 .top_spac{ margin: 20px 0 0;}
 
@@ -116,6 +151,11 @@ img{ max-width:100%;}
 .chat_img {
   float: left;
   width: 11%;
+}
+.chat_ib {
+  float: left;
+  padding: 0 0 0 15px;
+  width: 88%;
 }
 
 .chat_people{ overflow:hidden; clear:both;}
@@ -200,8 +240,5 @@ img{ max-width:100%;}
 .msg_history {
   height: 516px;
   overflow-y: auto;
-}
-.ml-25{
-  margin-left: 25%;
 }
 </style>
