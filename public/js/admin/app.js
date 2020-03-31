@@ -48758,7 +48758,20 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _c(
+                      "button",
+                      {
+                        staticClass: "msg_send_btn",
+                        attrs: { type: "button" },
+                        on: { click: _vm.saveMessage }
+                      },
+                      [
+                        _c("i", {
+                          staticClass: "fa fa-paper-plane-o",
+                          attrs: { "aria-hidden": "true" }
+                        })
+                      ]
+                    )
                   ])
                 ])
               ])
@@ -48808,7 +48821,20 @@ var render = function() {
                   }
                 }),
                 _vm._v(" "),
-                _vm._m(4)
+                _c(
+                  "button",
+                  {
+                    staticClass: "msg_send_btn",
+                    attrs: { type: "button" },
+                    on: { click: _vm.saveMessage }
+                  },
+                  [
+                    _c("i", {
+                      staticClass: "fa fa-paper-plane-o",
+                      attrs: { "aria-hidden": "true" }
+                    })
+                  ]
+                )
               ])
             ])
           ])
@@ -48851,36 +48877,6 @@ var staticRenderFns = [
         }
       })
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "msg_send_btn", attrs: { type: "button" } },
-      [
-        _c("i", {
-          staticClass: "fa fa-paper-plane-o",
-          attrs: { "aria-hidden": "true" }
-        })
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "msg_send_btn", attrs: { type: "button" } },
-      [
-        _c("i", {
-          staticClass: "fa fa-paper-plane-o",
-          attrs: { "aria-hidden": "true" }
-        })
-      ]
-    )
   }
 ]
 render._withStripped = true
