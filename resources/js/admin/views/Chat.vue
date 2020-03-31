@@ -4,7 +4,7 @@
      <br>
     <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
-<div class="messaging" v-if="messages.length>0">
+<div v-if="loading" class="messaging">
       <div class="inbox_msg">
         <div class="inbox_people">
           <div class="headind_srch">
@@ -14,7 +14,7 @@
           </div>
           <div class="inbox_chat">
             <div class="chat_list active_chat">
-              <div class="chat_people">
+              <div @click="showMsgs= true" class="chat_people">
                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                 <div class="chat_ib">
                   <h5> {{ message_from}}<span class="chat_date">
@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <div class="mesgs">
+        <div v-if="showMsgs" class="mesgs">
           <div class="msg_history">
             <div v-for="(message,key) in messages" :key="key" 
             :class="[message.author === authUser?'sent_msg': 'received_msg']">
@@ -33,6 +33,7 @@
               <div class="received_msg">
                 <div class="received_withd_msg">
                   <p>{{ message.message }}</p>
+                  <i @click="remove(message)" class="fa fa-trash"></i>
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
@@ -48,15 +49,8 @@
             
     </div>
     <div v-else>
-      <br><br>
-      <h3 class="text-danger text-center">You don't have any message</h3>
-      <br><br>
-      <div class="type_msg">
-            <div class="input_msg_write">
-              <input @keyup.enter="saveMessage" v-model="message" type="text" class="write_msg" placeholder="Type a message" />
-              <button @click="saveMessage" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-            </div>
-          </div>
+      <br>
+      <h3 class="text-danger text-center">Loading ...</h3>
     </div>
     </div>
 
@@ -71,10 +65,12 @@ import firebase from 'firebase'
 export default {
   data() {
     return {
+      loading:false,
       message:null,
+      showMsgs:false,
       messages: [],
       authUser: '',
-      message_from:'',
+      message_from:'Test User',
     }
   },
   methods:{
@@ -103,11 +99,15 @@ export default {
         }
       });
       this.messages = allMessages;
+      this.loading=true;
     });
-  }
+  },
+  remove(msg){
+    
+  },
   },
   created(){
-    this.fetchMessages();
+    this.fetchMessages()
   },
   mounted(){
     this.authUser = localStorage.getItem('user');

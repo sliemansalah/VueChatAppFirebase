@@ -44635,20 +44635,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      loading: false,
       message: null,
+      showMsgs: false,
       messages: [],
       authUser: '',
-      message_from: ''
+      message_from: 'Test User'
     };
   },
   methods: {
@@ -44679,8 +44675,10 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
         _this.messages = allMessages;
+        _this.loading = true;
       });
-    }
+    },
+    remove: function remove(msg) {}
   },
   created: function created() {
     this.fetchMessages();
@@ -48662,7 +48660,7 @@ var render = function() {
       _vm._v(" "),
       _c("h3", { staticClass: " text-center" }, [_vm._v("Messaging")]),
       _vm._v(" "),
-      _vm.messages.length > 0
+      _vm.loading
         ? _c("div", { staticClass: "messaging" }, [
             _c("div", { staticClass: "inbox_msg" }, [
               _c("div", { staticClass: "inbox_people" }, [
@@ -48670,172 +48668,143 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "inbox_chat" }, [
                   _c("div", { staticClass: "chat_list active_chat" }, [
-                    _c("div", { staticClass: "chat_people" }, [
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "chat_ib" }, [
-                        _c("h5", [
-                          _vm._v(" " + _vm._s(_vm.message_from)),
-                          _c("span", { staticClass: "chat_date" })
-                        ]),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "chat_people",
+                        on: {
+                          click: function($event) {
+                            _vm.showMsgs = true
+                          }
+                        }
+                      },
+                      [
+                        _vm._m(1),
                         _vm._v(" "),
-                        _c("p")
-                      ])
-                    ])
+                        _c("div", { staticClass: "chat_ib" }, [
+                          _c("h5", [
+                            _vm._v(" " + _vm._s(_vm.message_from)),
+                            _c("span", { staticClass: "chat_date" })
+                          ]),
+                          _vm._v(" "),
+                          _c("p")
+                        ])
+                      ]
+                    )
                   ])
                 ])
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "mesgs" }, [
-                _c(
-                  "div",
-                  { staticClass: "msg_history" },
-                  _vm._l(_vm.messages, function(message, key) {
-                    return _c(
-                      "div",
-                      {
-                        key: key,
-                        class: [
-                          message.author === _vm.authUser
-                            ? "sent_msg"
-                            : "received_msg"
-                        ]
-                      },
-                      [
-                        _vm._m(2, true),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "received_msg" }, [
-                          _c("div", { staticClass: "received_withd_msg" }, [
-                            _c("p", [_vm._v(_vm._s(message.message))]),
-                            _vm._v(" "),
-                            _c("span", { staticClass: "time_date" }, [
-                              _vm._v(_vm._s(message.author))
-                            ])
-                          ])
-                        ])
-                      ]
-                    )
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "type_msg" }, [
-                  _c("div", { staticClass: "input_msg_write" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.message,
-                          expression: "message"
-                        }
-                      ],
-                      staticClass: "write_msg",
-                      attrs: { type: "text", placeholder: "Type a message" },
-                      domProps: { value: _vm.message },
-                      on: {
-                        keyup: function($event) {
-                          if (
-                            !$event.type.indexOf("key") &&
-                            _vm._k(
-                              $event.keyCode,
-                              "enter",
-                              13,
-                              $event.key,
-                              "Enter"
-                            )
-                          ) {
-                            return null
-                          }
-                          return _vm.saveMessage($event)
-                        },
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.message = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
+              _vm.showMsgs
+                ? _c("div", { staticClass: "mesgs" }, [
                     _c(
-                      "button",
-                      {
-                        staticClass: "msg_send_btn",
-                        attrs: { type: "button" },
-                        on: { click: _vm.saveMessage }
-                      },
-                      [
-                        _c("i", {
-                          staticClass: "fa fa-paper-plane-o",
-                          attrs: { "aria-hidden": "true" }
-                        })
-                      ]
-                    )
+                      "div",
+                      { staticClass: "msg_history" },
+                      _vm._l(_vm.messages, function(message, key) {
+                        return _c(
+                          "div",
+                          {
+                            key: key,
+                            class: [
+                              message.author === _vm.authUser
+                                ? "sent_msg"
+                                : "received_msg"
+                            ]
+                          },
+                          [
+                            _vm._m(2, true),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "received_msg" }, [
+                              _c("div", { staticClass: "received_withd_msg" }, [
+                                _c("p", [_vm._v(_vm._s(message.message))]),
+                                _vm._v(" "),
+                                _c("i", {
+                                  staticClass: "fa fa-trash",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.remove(message)
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "time_date" }, [
+                                  _vm._v(_vm._s(message.author))
+                                ])
+                              ])
+                            ])
+                          ]
+                        )
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "type_msg" }, [
+                      _c("div", { staticClass: "input_msg_write" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.message,
+                              expression: "message"
+                            }
+                          ],
+                          staticClass: "write_msg",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Type a message"
+                          },
+                          domProps: { value: _vm.message },
+                          on: {
+                            keyup: function($event) {
+                              if (
+                                !$event.type.indexOf("key") &&
+                                _vm._k(
+                                  $event.keyCode,
+                                  "enter",
+                                  13,
+                                  $event.key,
+                                  "Enter"
+                                )
+                              ) {
+                                return null
+                              }
+                              return _vm.saveMessage($event)
+                            },
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.message = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "msg_send_btn",
+                            attrs: { type: "button" },
+                            on: { click: _vm.saveMessage }
+                          },
+                          [
+                            _c("i", {
+                              staticClass: "fa fa-paper-plane-o",
+                              attrs: { "aria-hidden": "true" }
+                            })
+                          ]
+                        )
+                      ])
+                    ])
                   ])
-                ])
-              ])
+                : _vm._e()
             ])
           ])
         : _c("div", [
             _c("br"),
-            _c("br"),
             _vm._v(" "),
             _c("h3", { staticClass: "text-danger text-center" }, [
-              _vm._v("You don't have any message")
-            ]),
-            _vm._v(" "),
-            _c("br"),
-            _c("br"),
-            _vm._v(" "),
-            _c("div", { staticClass: "type_msg" }, [
-              _c("div", { staticClass: "input_msg_write" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.message,
-                      expression: "message"
-                    }
-                  ],
-                  staticClass: "write_msg",
-                  attrs: { type: "text", placeholder: "Type a message" },
-                  domProps: { value: _vm.message },
-                  on: {
-                    keyup: function($event) {
-                      if (
-                        !$event.type.indexOf("key") &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
-                      }
-                      return _vm.saveMessage($event)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.message = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "msg_send_btn",
-                    attrs: { type: "button" },
-                    on: { click: _vm.saveMessage }
-                  },
-                  [
-                    _c("i", {
-                      staticClass: "fa fa-paper-plane-o",
-                      attrs: { "aria-hidden": "true" }
-                    })
-                  ]
-                )
-              ])
+              _vm._v("Loading ...")
             ])
           ])
     ])
