@@ -5,6 +5,8 @@ import store from "./store";
 
 import firebase from 'firebase';
 
+require("firebase/firestore");
+
 var config =  {
   apiKey: "AIzaSyCxIaf6Joaf3ReO1eYnMhY0IG4DDc-NwCA",
   authDomain: "vue-chatapp-ed381.firebaseapp.com",
@@ -17,6 +19,14 @@ var config =  {
 
 firebase.initalizeApp(config);
 
+var db = firebase.firestore();
+window.db = db;
+
+db.settings({
+  timestampsInSnapshots:true
+});
+
+Vue.config.productionTip = false;
 new Vue({
   router,
   store,
