@@ -139,7 +139,7 @@ export default {
       this.message = null;
     },
     fetchMessages(){
-    db.collection('chat').orderBy('createdAt').get().then((querySnapshot) => {
+    db.collection('chat').orderBy('createdAt').onSnapshot((querySnapshot) => {
       let allMessages = [];
       querySnapshot.forEach(doc => {
         allMessages.push(doc.data());
