@@ -1,15 +1,26 @@
 <template>
     <div class="container">
         <div class="row">
-        <h2>Signin</h2>
+        <h2 v-if="log">Signin</h2>
+        <h2 v-else>Register</h2>
 
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
-
+        <div v-if="log" class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
             <input type="email" v-model="formData.email" class="form-control" placeholder="email">
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="password">
             <br>
             <button class="btn btn-success" @click="signIn">Signin</button>
+            <button class="btn btn-danger" @click="log=false">Go to Register</button>
+
+        </div>
+        <div v-else class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+ <input type="email" v-model="formData.email" class="form-control" placeholder="email">
+            <br>
+            <input type="password" v-model="formData.password" class="form-control" placeholder="password">
+            <br>
+            <button class="btn btn-success" @click="signUp">Register</button>
+            <button class="btn btn-danger" @click="log=true">Go to SignIn</button>
+
         </div>
 
     </div>
@@ -22,6 +33,7 @@ import firebase from 'firebase';
         name: 'SignIn',
         data () {
             return {
+                log:true,
                 formData:{
                     email:'',
                     password:''
@@ -33,10 +45,19 @@ import firebase from 'firebase';
                 firebase.auth().signInWithEmailAndPassword(this.formData.email,this.formData.password)
                     .then((user)=>{
                         localStorage.setItem('user',this.formData.email)
-                      this.$router.replace('/chat')
+                        this.$router.go(0)
                     })
                     .catch((e)=>{
                         alert(e.message)
+                    })
+            },
+            signUp(){
+                firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
+                    .then((user)=>{
+                        this.$router.go(0)
+                    })
+                    .catch((e)=>{
+                    alert('oops'+e.message);
                     })
             }
         },

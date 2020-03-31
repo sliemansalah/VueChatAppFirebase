@@ -4,7 +4,7 @@
 	<router-view></router-view>
   	</div>
   <div v-else>
-	  <login class="mt-200"></login>
+	  <login></login>
   </div>
   </div>
 </template>
@@ -32,7 +32,4 @@ export default {
 </script>
 
 <style>
-.mt-200{
-  margin-top:200px
-}
 </style>
