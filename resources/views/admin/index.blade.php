@@ -12,7 +12,6 @@
   </head>
   <body>
     <div id="app">
-    <h3>test</h3>
     </div>
 		<script src="{{ mix('js/admin/app.js') }}"></script>
   </body>
