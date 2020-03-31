@@ -2,6 +2,7 @@
   <div class="home">
    <div class="container">
      <br>
+     <p>User Email: <span class="text-primary">{{ this.authUser }}</span></p>
     <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
 <div v-if="loading" class="messaging">
@@ -14,11 +15,14 @@
           </div>
           <div class="inbox_chat">
             <div class="chat_list active_chat">
-              <div @click="showMsgs= true" class="chat_people">
+              <div @click="showOurMsg" class="chat_people">
                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                 <div class="chat_ib">
-                  <h5> {{ message_from}}<span class="chat_date">
-                    </span></h5>
+                  <h5> {{ message_from}}
+                    <span v-if="msgNotReadCount>0" class="badge badge-danger">
+                      {{ msgNotReadCount }}
+                    </span>
+                    </h5>
                   <p></p>
                 </div>
               </div>
@@ -34,6 +38,7 @@
                 <div class="received_withd_msg">
                   <p>{{ message.message }}</p>
                   <i @click="remove(message)" class="fa fa-trash"></i>
+                    <i @click="edit(message)" class="fa fa-pencil"></i>
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
@@ -65,6 +70,7 @@ import firebase from 'firebase'
 export default {
   data() {
     return {
+      msgNotReadCount:0,
       loading:false,
       message:null,
       showMsgs:false,
@@ -79,13 +85,21 @@ export default {
       this.$router.replace('/login')
     },
     saveMessage(){
+        this.msgNotReadCount = 0;
       // save to firestore
       db.collection('chat').add({
         message:this.message,
         author: this.authUser,
+        id:null,
+        read:false,
         createdAt: new Date()
-      })
+      }).then(function(docRef) {
+        db.collection('chat').doc(docRef.id).update({
+          id: docRef.id
+        })
+})
       this.message = null;
+      this.showOurMsg();
     },
     fetchMessages(){
     db.collection('chat').orderBy('createdAt').onSnapshot((querySnapshot) => {
@@ -93,18 +107,45 @@ export default {
       querySnapshot.forEach(doc => {
         allMessages.push(doc.data());
       });
+              this.msgNotReadCount = 0;
       allMessages.forEach(msg => {
         if(msg.author !== this.authUser) {
           this.message_from = msg.author;
+          !msg.read? this.msgNotReadCount++:null
         }
       });
       this.messages = allMessages;
       this.loading=true;
     });
   },
-  remove(msg){
-    
+  remove(m){
+        db.collection('chat').doc(m.id).delete()
+        .then(_=> {
+          console.log('Deleted successfully');
+        })
   },
+  edit(m){
+        db.collection('chat').doc(m.id).update({
+          message:this.message
+        })
+        .then(_=> {
+                   console.log('Updated successfully');
+        })
+  },
+  showOurMsg() {
+    this.showMsgs= true;
+    this.messages.forEach(msg => {
+        if(msg.author !== this.authUser) {
+          this.msgNotReadCount = 0;
+           db.collection('chat').doc(msg.id).update({
+             read:true
+           })
+        .then(_=> {
+          console.log('Message Read Update');
+        })
+        }
+      });
+  }
   },
   created(){
     this.fetchMessages()

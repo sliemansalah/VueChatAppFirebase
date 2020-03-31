@@ -44635,10 +44635,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      msgNotReadCount: 0,
       loading: false,
       message: null,
       showMsgs: false,
@@ -44653,13 +44659,21 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.replace('/login');
     },
     saveMessage: function saveMessage() {
-      // save to firestore
+      this.msgNotReadCount = 0; // save to firestore
+
       db.collection('chat').add({
         message: this.message,
         author: this.authUser,
+        id: null,
+        read: false,
         createdAt: new Date()
+      }).then(function (docRef) {
+        db.collection('chat').doc(docRef.id).update({
+          id: docRef.id
+        });
       });
       this.message = null;
+      this.showOurMsg();
     },
     fetchMessages: function fetchMessages() {
       var _this = this;
@@ -44669,16 +44683,44 @@ __webpack_require__.r(__webpack_exports__);
         querySnapshot.forEach(function (doc) {
           allMessages.push(doc.data());
         });
+        _this.msgNotReadCount = 0;
         allMessages.forEach(function (msg) {
           if (msg.author !== _this.authUser) {
             _this.message_from = msg.author;
+            !msg.read ? _this.msgNotReadCount++ : null;
           }
         });
         _this.messages = allMessages;
         _this.loading = true;
       });
     },
-    remove: function remove(msg) {}
+    remove: function remove(m) {
+      db.collection('chat').doc(m.id)["delete"]().then(function (_) {
+        console.log('Deleted successfully');
+      });
+    },
+    edit: function edit(m) {
+      db.collection('chat').doc(m.id).update({
+        message: this.message
+      }).then(function (_) {
+        console.log('Updated successfully');
+      });
+    },
+    showOurMsg: function showOurMsg() {
+      var _this2 = this;
+
+      this.showMsgs = true;
+      this.messages.forEach(function (msg) {
+        if (msg.author !== _this2.authUser) {
+          _this2.msgNotReadCount = 0;
+          db.collection('chat').doc(msg.id).update({
+            read: true
+          }).then(function (_) {
+            console.log('Message Read Update');
+          });
+        }
+      });
+    }
   },
   created: function created() {
     this.fetchMessages();
@@ -48652,6 +48694,13 @@ var render = function() {
     _c("div", { staticClass: "container" }, [
       _c("br"),
       _vm._v(" "),
+      _c("p", [
+        _vm._v("User Email: "),
+        _c("span", { staticClass: "text-primary" }, [
+          _vm._v(_vm._s(this.authUser))
+        ])
+      ]),
+      _vm._v(" "),
       _c(
         "button",
         { staticClass: "btn btn-danger", on: { click: _vm.logout } },
@@ -48672,19 +48721,31 @@ var render = function() {
                       "div",
                       {
                         staticClass: "chat_people",
-                        on: {
-                          click: function($event) {
-                            _vm.showMsgs = true
-                          }
-                        }
+                        on: { click: _vm.showOurMsg }
                       },
                       [
                         _vm._m(1),
                         _vm._v(" "),
                         _c("div", { staticClass: "chat_ib" }, [
                           _c("h5", [
-                            _vm._v(" " + _vm._s(_vm.message_from)),
-                            _c("span", { staticClass: "chat_date" })
+                            _vm._v(
+                              " " +
+                                _vm._s(_vm.message_from) +
+                                "\n                    "
+                            ),
+                            _vm.msgNotReadCount > 0
+                              ? _c(
+                                  "span",
+                                  { staticClass: "badge badge-danger" },
+                                  [
+                                    _vm._v(
+                                      "\n                      " +
+                                        _vm._s(_vm.msgNotReadCount) +
+                                        "\n                    "
+                                    )
+                                  ]
+                                )
+                              : _vm._e()
                           ]),
                           _vm._v(" "),
                           _c("p")
@@ -48723,6 +48784,15 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       return _vm.remove(message)
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("i", {
+                                  staticClass: "fa fa-pencil",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.edit(message)
                                     }
                                   }
                                 }),
