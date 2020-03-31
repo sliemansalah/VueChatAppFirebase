@@ -48697,7 +48697,7 @@ var render = function() {
       _c("p", [
         _vm._v("User Email: "),
         _c("span", { staticClass: "text-primary" }, [
-          _vm._v(_vm._s(this.authUser))
+          _vm._v(_vm._s(_vm.authUser))
         ])
       ]),
       _vm._v(" "),
@@ -48779,23 +48779,27 @@ var render = function() {
                               _c("div", { staticClass: "received_withd_msg" }, [
                                 _c("p", [_vm._v(_vm._s(message.message))]),
                                 _vm._v(" "),
-                                _c("i", {
-                                  staticClass: "fa fa-trash",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.remove(message)
-                                    }
-                                  }
-                                }),
+                                _vm.authUser == message.author
+                                  ? _c("i", {
+                                      staticClass: "fa fa-trash",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.remove(message)
+                                        }
+                                      }
+                                    })
+                                  : _vm._e(),
                                 _vm._v(" "),
-                                _c("i", {
-                                  staticClass: "fa fa-pencil",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.edit(message)
-                                    }
-                                  }
-                                }),
+                                _vm.authUser == message.author
+                                  ? _c("i", {
+                                      staticClass: "fa fa-pencil",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.edit(message)
+                                        }
+                                      }
+                                    })
+                                  : _vm._e(),
                                 _vm._v(" "),
                                 _c("span", { staticClass: "time_date" }, [
                                   _vm._v(_vm._s(message.author))

@@ -2,7 +2,7 @@
   <div class="home">
    <div class="container">
      <br>
-     <p>User Email: <span class="text-primary">{{ this.authUser }}</span></p>
+     <p>User Email: <span class="text-primary">{{ authUser }}</span></p>
     <button @click="logout" class="btn btn-danger">Logout</button>
 <h3 class=" text-center">Messaging</h3>
 <div v-if="loading" class="messaging">
@@ -37,8 +37,8 @@
               <div class="received_msg">
                 <div class="received_withd_msg">
                   <p>{{ message.message }}</p>
-                  <i @click="remove(message)" class="fa fa-trash"></i>
-                    <i @click="edit(message)" class="fa fa-pencil"></i>
+                  <i v-if="authUser == message.author" @click="remove(message)" class="fa fa-trash"></i>
+                    <i v-if="authUser == message.author" @click="edit(message)" class="fa fa-pencil"></i>
                   <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
