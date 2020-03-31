@@ -17,7 +17,7 @@ var config =  {
   appId: "1:333394129790:web:f7629434fa42549527792f"
 };
 
-firebase.initalizeApp(config);
+firebase.initializeApp(config);
 
 var db = firebase.firestore();
 window.db = db;
